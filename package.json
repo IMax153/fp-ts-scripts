@@ -1,6 +1,6 @@
 {
   "name": "fp-ts-scripts",
-  "description": "Utility scripts for libraries in the fp-ts ecosystem",
+  "description": "Utility scripts for fp-ts ecosystem libraries",
   "version": "0.0.1",
   "author": "Maxwell Brown <maxwellbrown1990@gmail.com> (https://github.com/IMax153)",
   "license": "MIT",
