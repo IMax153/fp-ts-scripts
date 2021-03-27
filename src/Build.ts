@@ -3,6 +3,7 @@
  */
 import Commander from 'commander'
 import * as E from 'fp-ts/Either'
+import type { Endomorphism } from 'fp-ts/function'
 import { constVoid, flow, pipe } from 'fp-ts/function'
 import * as Json from 'fp-ts/Json'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
@@ -120,8 +121,23 @@ const module = (
 })
 
 // -------------------------------------------------------------------------------------
-// files
+// build
 // -------------------------------------------------------------------------------------
+
+const es5ImportRegex = /require\(('|")\.\//g
+const es6ImportRegex = /from ('|")\.\//g
+const typeImportRegex = /import\(('|")\.\//g
+const declareModuleRegex = /declare module ('|")\.\//g
+
+const replaceES5LocalImports: Endomorphism<string> = (s) =>
+  s.replace(es5ImportRegex, `require('../`)
+
+const replaceES6LocalImports: Endomorphism<string> = (s) => s.replace(es6ImportRegex, `from '../`)
+
+const replaceTypeImports: Endomorphism<string> = (s) => s.replace(typeImportRegex, `import('../`)
+
+const replaceDeclareModule: Endomorphism<string> = (s) =>
+  s.replace(declareModuleRegex, `declare module '../`)
 
 const getModuleSubdirectory = (path: ParsedPath): Build<string> =>
   pipe(
@@ -154,7 +170,7 @@ const getModuleES5Artifact = (name: string, subDirectory: string): Build<Artifac
         TE.chainFirst(({ tsBuildPath }) => C.debug(`Reading es5 build from "${tsBuildPath}"`)),
         TE.bind('source', ({ tsBuildPath }) => C.readFile(tsBuildPath)),
         TE.bind('destination', () => TE.of(Path.join(C.outDir, subDirectory, name, `${name}.js`))),
-        TE.map(({ destination, source }) => artifact(source, destination))
+        TE.map(({ destination, source }) => artifact(replaceES5LocalImports(source), destination))
       )
     )
   )
@@ -173,7 +189,7 @@ const getModuleES6Artifact = (name: string, subDirectory: string): Build<Artifac
         TE.bind('destination', () =>
           TE.of(Path.join(C.outDir, subDirectory, name, `${name}.${C.es6Dir}.js`))
         ),
-        TE.map(({ destination, source }) => artifact(source, destination))
+        TE.map(({ destination, source }) => artifact(replaceES6LocalImports(source), destination))
       )
     )
   )
@@ -192,7 +208,12 @@ const getModuleTypingsArtifact = (name: string, subDirectory: string): Build<Art
         TE.bind('destination', () =>
           TE.of(Path.join(C.outDir, subDirectory, name, `${name}.d.ts`))
         ),
-        TE.map(({ destination, source }) => artifact(source, destination))
+        TE.map(({ destination, source }) =>
+          artifact(
+            replaceTypeImports(replaceDeclareModule(replaceES6LocalImports(source))),
+            destination
+          )
+        )
       )
     )
   )
