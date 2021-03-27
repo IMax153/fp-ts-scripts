@@ -419,7 +419,7 @@ const main: (args: unknown) => Task<void> = flow(
  */
 export const makeCommand = (): Commander.Command =>
   new Commander.Command('build')
-    .description('Builds compiled source code')
+    .description('Compiles source code and reorganizes the build output')
     .addOption(
       new Commander.Option(
         '-b, --build-targets <targets...>',

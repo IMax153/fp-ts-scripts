@@ -90,6 +90,6 @@ const main: (args: unknown) => Task<void> = flow(
  */
 export const makeCommand = (): Commander.Command =>
   new Commander.Command('release')
-    .description('publish the specified output directory')
+    .description('Publishes the specified output directory')
     .option('-o, --output-dir', 'directory to target for publishing', 'dist')
     .action((args) => main(args)())

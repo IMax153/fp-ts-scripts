@@ -142,7 +142,7 @@ const main: (args: unknown) => Task<void> = flow(
  */
 export const makeCommand = (): Commander.Command =>
   new Commander.Command('import-path-rewrite')
-    .description('rewrite fp-ts imports targeting one build directory to another build directory')
+    .description('Rewrites fp-ts imports targeting one build directory to another build directory')
     .addOption(
       new Commander.Option(
         '-d, --directories <glob pattern...>',

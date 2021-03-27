@@ -26,4 +26,6 @@ const main: Task<void> = pipe(
  * @since 0.0.1
  */
 export const makeCommand = (): Commander.Command =>
-  new Commander.Command('pre-publish').description('pre-publish script').action(main)
+  new Commander.Command('pre-publish')
+    .description('Ensures that pre-publish is never run from the root directory')
+    .action(main)
