@@ -16,6 +16,7 @@ import type { TaskDecoder } from 'io-ts/TaskDecoder'
 import * as TD from 'io-ts/TaskDecoder'
 import type { ParsedPath } from 'path'
 import * as Path from 'path'
+import * as Prettier from 'prettier'
 
 import { ChildProcess } from './ChildProcess'
 import { execute } from './Execute'
@@ -113,24 +114,36 @@ const module = (
   packageJson
 })
 
+const prettierOptions: Prettier.Options = {
+  semi: false,
+  singleQuote: true,
+  printWidth: 120,
+  trailingComma: 'none',
+  parser: 'typescript'
+}
+
 // -------------------------------------------------------------------------------------
 // build
 // -------------------------------------------------------------------------------------
 
-const es5ImportRegex = /require\(('|")\.\//g
-const es6ImportRegex = /from ('|")\.\//g
-const typeImportRegex = /import\(('|")\.\//g
-const declareModuleRegex = /declare module ('|")\.\//g
+const es5ImportRegex = /require\('\.\//g
+const es6ImportRegex = /from '\.\//g
+const typeImportRegex = /import\("\.\//g
+const declareModuleRegex = /declare module '\.\//g
+
+const prettify: Endomorphism<string> = (s) => Prettier.format(s, prettierOptions)
 
 const replaceES5LocalImports: Endomorphism<string> = (s) =>
-  s.replace(es5ImportRegex, `require('../`)
+  prettify(s).replace(es5ImportRegex, `require('../`)
 
-const replaceES6LocalImports: Endomorphism<string> = (s) => s.replace(es6ImportRegex, `from '../`)
+const replaceES6LocalImports: Endomorphism<string> = (s) =>
+  prettify(s).replace(es6ImportRegex, `from '../`)
 
-const replaceTypeImports: Endomorphism<string> = (s) => s.replace(typeImportRegex, `import('../`)
+const replaceTypeImports: Endomorphism<string> = (s) =>
+  prettify(s).replace(typeImportRegex, `import("../`)
 
 const replaceDeclareModule: Endomorphism<string> = (s) =>
-  s.replace(declareModuleRegex, `declare module '../`)
+  prettify(s).replace(declareModuleRegex, `declare module '../`)
 
 const getModuleSubdirectory = (path: ParsedPath): Build<string> =>
   pipe(
@@ -379,6 +392,16 @@ const begin: Build<void> = pipe(
   )
 )
 
+const clean: Build<void> = pipe(
+  RTE.ask<Capabilities>(),
+  RTE.chainTaskEitherK((C) =>
+    pipe(
+      C.log(`Removing "${C.outDir}" if exists`),
+      TE.chain(() => C.rmdir(C.outDir))
+    )
+  )
+)
+
 const cleanup: Build<void> = pipe(
   RTE.ask<Capabilities>(),
   RTE.chainTaskEitherK((C) =>
@@ -405,6 +428,7 @@ const cleanup: Build<void> = pipe(
 
 const build: Build<void> = pipe(
   begin,
+  RTE.chain(() => clean),
   RTE.chain(() => buildTypescript),
   RTE.chain(() => buildModules),
   RTE.chain(() => copyProjectFiles),
