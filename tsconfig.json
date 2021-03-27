@@ -11,7 +11,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "lib",
+    "outDir": "./dist/lib",
     "sourceMap": false,
     "strict": true,
     "stripInternal": true,
