@@ -1,6 +1,6 @@
 ---
 title: FileSystem.ts
-nav_order: 4
+nav_order: 5
 parent: Modules
 ---
 
@@ -44,8 +44,9 @@ export interface FileSystem {
   readonly modifyFile: (f: Endomorphism<string>) => (path: string) => TaskEither<NodeJS.ErrnoException, void>
   readonly copyFile: (from: string, to: string) => TaskEither<Error, void>
   readonly glob: (pattern: string) => TaskEither<Error, ReadonlyArray<string>>
-  readonly mkdir: (path: string) => TaskEither<Error, void>
+  readonly mkdir: (path: string, options?: fs.MakeDirectoryOptions) => TaskEither<Error, void>
   readonly moveFile: (from: string, to: string) => TaskEither<Error, void>
+  readonly rmdir: (path: string, options?: fs.RmDirOptions) => TaskEither<Error, void>
 }
 ```
 

@@ -15,9 +15,11 @@ Added in v0.0.1
 - [command](#command)
   - [makeCommand](#makecommand)
 - [model](#model)
+  - [Artifact (interface)](#artifact-interface)
   - [Build (interface)](#build-interface)
   - [BuildOptions (interface)](#buildoptions-interface)
   - [Capabilities (interface)](#capabilities-interface)
+  - [Module (interface)](#module-interface)
 
 ---
 
@@ -35,6 +37,19 @@ Added in v0.0.1
 
 # model
 
+## Artifact (interface)
+
+**Signature**
+
+```ts
+export interface Artifact {
+  readonly source: string
+  readonly destination: string
+}
+```
+
+Added in v0.0.1
+
 ## Build (interface)
 
 **Signature**
@@ -51,10 +66,12 @@ Added in v0.0.1
 
 ```ts
 export interface BuildOptions {
-  readonly copyFiles: ReadonlyArray<string>
-  readonly mainDir: string
-  readonly moduleDir: string
-  readonly outputDir: string
+  readonly buildTargets: ReadonlyNonEmptyArray<string>
+  readonly es5Dir: string
+  readonly es6Dir: string
+  readonly outDir: string
+  readonly projectFiles: ReadonlyArray<string>
+  readonly srcDir: string
 }
 ```
 
@@ -65,7 +82,24 @@ Added in v0.0.1
 **Signature**
 
 ```ts
-export interface Capabilities extends BuildOptions, FileSystem {}
+export interface Capabilities extends BuildOptions, ChildProcess, FileSystem, Logger {}
+```
+
+Added in v0.0.1
+
+## Module (interface)
+
+**Signature**
+
+```ts
+export interface Module {
+  readonly name: string
+  readonly buildDirectory: string
+  readonly es5: Artifact
+  readonly es6: Artifact
+  readonly typings: Artifact
+  readonly packageJson: Artifact
+}
 ```
 
 Added in v0.0.1

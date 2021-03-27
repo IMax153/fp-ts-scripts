@@ -10,7 +10,6 @@ import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
-import type { ReadonlyRecord } from 'fp-ts/ReadonlyRecord'
 import type { Task } from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import type { TaskDecoder } from 'io-ts/TaskDecoder'
@@ -51,12 +50,6 @@ export interface BuildOptions {
  * @since 0.0.1
  */
 export interface Capabilities extends BuildOptions, ChildProcess, FileSystem, Logger {}
-
-export interface PackageJson {
-  readonly scripts?: ReadonlyRecord<string, string>
-  readonly files?: ReadonlyArray<string>
-  readonly devDependencies?: ReadonlyRecord<string, string>
-}
 
 /**
  * @category model
