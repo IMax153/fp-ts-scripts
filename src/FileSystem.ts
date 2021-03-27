@@ -2,7 +2,7 @@
  * @since 0.0.1
  */
 import type { Endomorphism } from 'fp-ts/function'
-import { constVoid, flow, pipe } from 'fp-ts/function'
+import { constVoid, pipe } from 'fp-ts/function'
 import type { TaskEither } from 'fp-ts/TaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import * as fs from 'fs'
@@ -24,8 +24,9 @@ export interface FileSystem {
   ) => (path: string) => TaskEither<NodeJS.ErrnoException, void>
   readonly copyFile: (from: string, to: string) => TaskEither<Error, void>
   readonly glob: (pattern: string) => TaskEither<Error, ReadonlyArray<string>>
-  readonly mkdir: (path: string) => TaskEither<Error, void>
+  readonly mkdir: (path: string, options?: fs.MakeDirectoryOptions) => TaskEither<Error, void>
   readonly moveFile: (from: string, to: string) => TaskEither<Error, void>
+  readonly rmdir: (path: string, options?: fs.RmDirOptions) => TaskEither<Error, void>
 }
 
 // -------------------------------------------------------------------------------------
@@ -64,17 +65,31 @@ export const copyFile = TE.taskify<fs.PathLike, fs.PathLike, NodeJS.ErrnoExcepti
 /**
  * @internal
  */
-export const glob = TE.taskify<string, Error, ReadonlyArray<string>>(G)
-
-/**
- * @internal
- */
-export const mkdirTE = TE.taskify(fs.mkdir)
-
-/**
- * @internal
- */
 export const moveFile = TE.taskify<fs.PathLike, fs.PathLike, NodeJS.ErrnoException, void>(fs.rename)
+
+/**
+ * @internal
+ */
+export const mkdir = TE.taskify(
+  (
+    path: fs.PathLike,
+    options: fs.MakeDirectoryOptions,
+    cb: (err: NodeJS.ErrnoException | null, path?: string) => void
+  ) => fs.mkdir(path, options, cb)
+)
+
+/**
+ * @internal
+ */
+export const rmdir = TE.taskify(
+  (path: fs.PathLike, options: fs.RmDirOptions, cb: fs.NoParamCallback) =>
+    fs.rmdir(path, options, cb)
+)
+
+/**
+ * @internal
+ */
+export const glob = TE.taskify<string, Error, ReadonlyArray<string>>(G)
 
 // -------------------------------------------------------------------------------------
 // instances
@@ -88,8 +103,11 @@ export const FileSystem: FileSystem = {
   readFile: (path) => readFile(path, 'utf8'),
   writeFile,
   modifyFile,
+  moveFile,
   copyFile,
-  glob,
-  mkdir: flow(mkdirTE, TE.map(constVoid)),
-  moveFile
+  mkdir: (path: string, options: fs.MakeDirectoryOptions = { recursive: true }) =>
+    pipe(mkdir(path, options), TE.map(constVoid)),
+  rmdir: (path: string, options: fs.RmDirOptions = { recursive: true }) =>
+    pipe(rmdir(path, options), TE.map(constVoid)),
+  glob
 }
