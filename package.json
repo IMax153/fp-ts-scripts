@@ -24,8 +24,8 @@
     "prerelease": "npm run build",
     "release": "ts-node scripts/release",
     "prebuild": "npm run clean",
-    "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "prettier --loglevel=silent --write \"./lib/**/*.ts\"",
+    "build": "ts-node-transpile-only src/bin.ts build -b tsconfig.build.json tsconfig.build-es6.json -f README.md LICENSE.md",
+    "postbuild": "prettier --loglevel=silent --write \"./dist/**/*.ts\"",
     "test": "jest",
     "prettier": "prettier --list-different \"./{src,test,examples,scripts}/**/*.ts\"",
     "fix-prettier": "prettier --write \"./{src,test,examples,scripts}/**/*.ts\"",
@@ -35,9 +35,10 @@
     "chalk": "^4.1.0",
     "commander": "^7.1.0",
     "eslint-plugin-fp-ts": "^0.2.1",
-    "fp-ts": "2.10.0-rc.4",
+    "fp-ts": "2.10.0-rc.6",
     "glob": "^7.1.6",
-    "io-ts": "^2.2.16"
+    "io-ts": "^2.2.16",
+    "logging-ts": "^0.3.4"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",

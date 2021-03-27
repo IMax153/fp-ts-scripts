@@ -2411,10 +2411,10 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
-fp-ts@2.10.0-rc.4:
-  version "2.10.0-rc.4"
-  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.10.0-rc.4.tgz#59b6b82627b4c020fceed5dbc6a973afd62a449d"
-  integrity sha512-AcJ/GLgHqigamIPDSDJjyINdVT1b//3AAw2sEwkS/756CpFeAw8u0F6Rpn15OtJd9Cvr5igobiXZpKj78eReNQ==
+fp-ts@2.10.0-rc.6:
+  version "2.10.0-rc.6"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.10.0-rc.6.tgz#288ca26db97ef4afaf3fbf34c32ac0e0d7177307"
+  integrity sha512-dUNErCzdLRRKi5UPIagInmG7IGIqnbF6P/K9h+gnrIjmBKmSGFHkpPZOxSTaxFbqdv3yLGL7W2GY6/9isvkpXA==
 
 fp-ts@^2.9.3:
   version "2.9.5"
