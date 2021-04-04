@@ -107,31 +107,6 @@ Publishes the specified output directory
 
 Options:
   -o, --output-dir  directory to target for publishing (default: "dist")
+  --tag [tag]       registers the published package with the given tag
   -h, --help        display help for command
-```
-
-### 3.4 Import Path Rewrite
-
-#### 3.4.1 Purpose
-
-??? - Unsure if this script is still necessary
-
-#### 3.4.2 Command
-
-```sh
-fp-ts-scripts import-path-rewrite
-```
-
-#### 3.4.3 Usage
-
-```sh
-Usage: fp-ts-scripts import-path-rewrite [options]
-
-rewrite fp-ts imports targeting one build directory to another build directory
-
-Options:
-  -d, --directories <glob pattern...>  glob patterns of directories to search (default: ["es6/**/*.@(d.ts|js)]","dist/es6/**/*.@(d.ts|js)"])
-  -f, --from <directory>               name of the directory to replace (default: "lib")
-  -t, --to <directory>                 name of the directory to use (default: "es6")
-  -h, --help                           display help for command
 ```
